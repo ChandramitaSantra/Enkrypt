@@ -1,0 +1,23 @@
+.layout {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  background-color:#0E1117; /* Ensure the base background is black */
+}
+
+.site-layout {
+  background-color: #0E1117; /* Ensures the content area also has a black background */
+}
+
+.header {
+  background-color: #0E1117; /* Sets the header background to black */
+  color: white; /* Sets the text color in the header to white */
+}
+
+.content {
+  background-color: #0E1117;
+  margin-top: 24px; /* Adjusts top margin for content to align with the bottom of the header */
+  color: white; /* Assuming you want the content background to be white */
+}
+
+/* Adjusts sidebar styling if necessary */
