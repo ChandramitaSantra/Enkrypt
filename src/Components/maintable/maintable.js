@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Table, Form } from 'antd';
 import { datas } from '../../data/export';
+import './maintable.css';
 
 const getPercentage = (data, key) => {
 	const sum = (arr) => arr.reduce((a, b) => a + b, 0);
@@ -115,7 +116,7 @@ const FixedTable = () => {
 				maxWidth: '700px',
 				Height: '500px',
 				overflowY: 'auto',
-				backgroundColor: 'black'
+				
 			}}
 		>
 			<Table
@@ -123,6 +124,7 @@ const FixedTable = () => {
 				dataSource={data}
 				pagination={false}
 				scroll={{ y: 400 }}
+				rowClassName={(record, index) => 'bgColor'}
 			/>
 		</div>
 	);
