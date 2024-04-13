@@ -1,39 +1,25 @@
 import React, { useState } from 'react';
-import './SwitchToggle1.css';
-
-const SwitchExample1 = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-
-  const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
+import { Button, Modal } from 'antd';
+const SwitchToggle = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
   };
-
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
   return (
     <>
-      <div className="form-check form-switch">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          style={{ display: 'none' }} // Hide the checkbox
-          role="switch"
-          id="collapseSwitch1"
-          checked={isCollapsed}
-          onChange={toggleCollapse}
-        />
-        <label className="form-check-label" htmlFor="collapseSwitch1"></label>
-      </div>
-
-      {isCollapsed && (
-        <div className="collapse show" id="collapseExample1">
-          <div className="card card-body">
-          Enkrypt AI's Sentry suite is a comprehensive and cutting-edge solution designed to enable secure, responsible, and compliant generative AI adoption within enterprises. As organizations increasingly leverage the transformative power of large language models (LLMs), the Sentry suite provides a robust control layer, ensuring seamless alignment with enterprise standards for privacy, security, and compliance.
-
-The Sentry suite comprises four key components: Gateway/Governance, Red Teaming, Guardrails, and Compliance.
-          </div>
-        </div>
-      )}
+      <Button type="primary" onClick={showModal}>
+        Generative AI
+      </Button>
+      <Modal title="Generative AI" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+        <p>Enkrypt AI's Sentry suite is a comprehensive and cutting-edge solution designed to enable secure, responsible, and compliant generative AI adoption within enterprises. As organizations increasingly leverage the transformative power of large language models (LLMs), the Sentry suite provides a robust control layer, ensuring seamless alignment with enterprise standards for privacy, security, and compliance.</p>
+      </Modal>
     </>
   );
 };
-
-export default SwitchExample1;
+export default SwitchToggle;
