@@ -1,7 +1,53 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Checkbox, Input, Button } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Table, Checkbox, Input, Button, Modal } from 'antd';
 import { datas } from '../../data/export';
+import Select from 'react-select';
 import './maintable.css';
+
+const customStyles = {
+	control: (provided, state) => ({
+		...provided,
+		backgroundColor: state.isFocused ? 'black' : 'black',
+		borderColor: state.isFocused ? '#FFFF' : '#FFF',
+		'&:hover': {
+			borderColor: state.isFocused ? '#FFF' : '#FFF'
+		},
+		fontSize: '14px' // Reduced font size
+	}),
+	option: (provided, state) => ({
+		...provided,
+		backgroundColor: state.isFocused ? '#FFF' : null,
+		'&:hover': {
+			backgroundColor: '#FFF'
+		},
+		fontSize: '14px' // Reduced font size
+	}),
+	menu: (provided) => ({
+		...provided,
+		backgroundColor: 'black',
+		fontSize: '14px' // Reduced font size
+	}),
+	menuList: (provided) => ({
+		...provided,
+		maxHeight: '200px',
+		overflowY: 'auto',
+		marginTop: 0,
+		padding: '4px 0' // Reduced padding
+	}),
+	singleValue: (provided) => ({
+		...provided,
+		color: '#FFFFFF'
+	}),
+	indicatorSeparator: (provided) => ({
+		...provided,
+		backgroundColor: '#303338'
+	}),
+	dropdownIndicator: (provided) => ({
+		...provided,
+		color: '#ffffff'
+	})
+};
+
 
 const getPercentage = (data, key) => {
   const sum = (arr) => arr.reduce((a, b) => a + b, 0);
@@ -33,9 +79,25 @@ const models = [
   'NexusRavenV2-13B'
 ];
 
-const FixedTable = () => {
+const options = [
+	{ value: 'Claude-3H', label: 'Claude-3H' },
+	{ value: 'Command-R+', label: 'Command-R+' },
+	{ value: 'DBRX-Instruct', label: 'DBRX-Instruct' },
+	{ value: 'GPT-3.5-turbo', label: 'GPT-3.5-turbo' },
+	{ value: 'GPT-4-turbo', label: 'GPT-4-turbo' },
+	{ value: 'Gemma-7B', label: 'Gemma-7B' },
+	{ value: 'InternLM2-Chat-20B', label: 'InternLM2-Chat-20B' },
+	{ value: 'JambaV0.1', label: 'JambaV0.1' },
+	{ value: 'Lla ma2-13B', label: 'Lla ma2-13B' },
+	
+  ];
+
+const FixedTableapp = ({ onModelClick }) => {
   const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState('');
+const [showCompare, setShowCompare] = useState(false);
+const [selectedModels, setSelectedModels] = useState([]);
+  const [showComparison, setShowComparison] = useState(false);
 
   useEffect(() => {
     const loadData = () => {
@@ -65,6 +127,7 @@ const FixedTable = () => {
     const newData = [...data];
     newData[index].selected = !newData[index].selected;
     setData(newData);
+	
   };
 
   const handleSearch = () => {
@@ -93,12 +156,19 @@ const FixedTable = () => {
     setData(newData);
   };
 
+  const handleCompare = () => {
+    const selectedData = data.filter(item => item.selected);
+    setSelectedModels(selectedData);
+    setShowComparison(true);
+  };
+
   const columns = [
     {
       title: 'Model Name',
       dataIndex: 'name',
       key: 'name',
-      sorter: (a, b) => a.name.localeCompare(b.name)
+      sorter: (a, b) => a.name.localeCompare(b.name),
+      render: (text) => <a href="#" onClick={() => onModelClick(text)}>{text}</a> // Render the name as a hyperlink with onClick handler
     },
     {
       title: 'Enkrypt AI Risk Score',
@@ -138,16 +208,10 @@ const FixedTable = () => {
       )
     }
   ];
+  const selectedData = data.filter(item => item.selected);
 
   return (
-    <div
-      style={{
-        margin: '0 auto',
-        maxWidth: '700px',
-        Height: '500px',
-        overflowY: 'auto'
-      }}
-    >
+    <div>
       <div style={{ marginBottom: '16px' }}>
         <Input
           placeholder="Search Model Name"
@@ -156,16 +220,56 @@ const FixedTable = () => {
           style={{ marginRight: '8px', width: '200px' }}
         />
         <Button type="primary" onClick={handleSearch}>Search</Button>
+        <div>
+        <Button type="primary" onClick={handleCompare}  >Compare Now</Button>
+        </div>
       </div>
-      <Table
-        columns={columns}
-        dataSource={data}
-        pagination={false}
-        scroll={{ y: 400 }}
-        rowClassName={(record, index) => 'bgColor'}
-      />
+      <Table columns={columns} dataSource={data} pagination={false} scroll={{ y: 400 }} />
+      {showComparison && (
+        <div style={{ marginTop: '16px', padding: '10px', border: '1px solid #ccc', backgroundColor:'FFFFFF' }}>
+          
+          {selectedModels.map(model => (
+            <div key={model.key}>
+              <p>{model.name}</p>
+              {/* Render more details for comparison here */}
+            </div>
+          ))}
+          <Button type="primary" onClick={() => setShowComparison(false)}>Close</Button>
+        </div>
+      )}
     </div>
   );
 };
+const FixedTable = () => {
+	const [modalVisible, setModalVisible] = useState(false);
+	const [selectedModel, setSelectedModel] = useState(null);
+  
+	const handleModelClick = (model) => {
+	  setSelectedModel(model);
+	  setModalVisible(true);
+	};
+  
+	return (
+	  <>
+		<FixedTableapp onModelClick={handleModelClick} />
+		<Modal
+	title="Model Details"
+	visible={modalVisible}
+	onCancel={() => setModalVisible(false)}
+	footer={null}
+	style={{ top: 80 }} // Adjust top position as needed
+  >
+	{selectedModel && (
+	  <div>
+		{/* Render model details here */}
+		<p>Model: {selectedModel}</p>
+		{/* Add other details as needed */}
+	  </div>
+	)}
+  </Modal>
+	  </>
+	);
+  };
+  
 
 export default FixedTable;

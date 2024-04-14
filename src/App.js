@@ -119,7 +119,7 @@ function App() {
             </a>{' '}
             for more information.
           </div>
-          <div style={{ marginTop: '40px' }}>
+          <div style={{ marginTop: '40px',marginRight:'100px', paddingLeft:'20px' }}>
             <FixedTable />
           </div>
         </Content>
